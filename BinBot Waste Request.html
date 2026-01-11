@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BinBot Waste Request</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #4F46E5;
+      --primary-light: #EEF2FF;
+      --accent: #10B981;
+      --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      --card-bg: #ffffff;
+      --text-main: #1F2937;
+      --text-light: #6B7280;
+      --radius: 16px;
+      --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+      padding: 20px;
+      color: var(--text-main);
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 480px;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      animation: slideUp 0.5s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(to right, var(--primary), #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      font-size: 0.95rem;
+      color: var(--text-light);
+    }
+
+    .section-label {
+      display: block;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      color: var(--text-light);
+      margin-bottom: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Interactive Grid Selectors */
+    .selection-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-chairs {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    .option-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 5px;
+      background: #F9FAFB;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      user-select: none;
+    }
+
+    .option-card:hover {
+      background: #F3F4F6;
+      transform: translateY(-2px);
+    }
+
+    /* Selected State */
+    input[type="radio"]:checked+.option-card {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+      font-weight: 700;
+      box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.1);
+    }
+
+    /* Icons if needed */
+    .icon {
+      font-size: 1.5rem;
+      margin-bottom: 5px;
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      margin-top: 2.5rem;
+      padding: 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+    }
+
+    .submit-btn:hover {
+      background: #4338ca;
+      transform: scale(1.02);
+    }
+
+    .submit-btn:active {
+      transform: scale(0.98);
+    }
+
+    #notification {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: 500;
+      min-height: 24px;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .success {
+      color: var(--accent);
+    }
+
+    .error {
+      color: #EF4444;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app-container">
+    <header>
+      <h1>BinBot Request</h1>
+      <p class="subtitle">Select your location and waste type</p>
+    </header>
+
+    <form id="wasteForm">
+      <!-- Table Selection -->
+      <label class="section-label">Table</label>
+      <div class="selection-grid grid-3">
+        <label>
+          <input type="radio" name="table" value="00">
+          <div class="option-card">T1</div>
+        </label>
+        <label>
+          <input type="radio" name="table" value="10">
+          <div class="option-card">T2</div>
+        </label>
+        <label>
+          <input type="radio" name="table" value="11">
+          <div class="option-card">T3</div>
+        </label>
+      </div>
+
+      <!-- Direction Selection -->
+      <label class="section-label">Direction</label>
+      <div class="selection-grid grid-2">
+        <label>
+          <input type="radio" name="direction" value="0">
+          <div class="option-card">Right ➡️</div>
+        </label>
+        <label>
+          <input type="radio" name="direction" value="1">
+          <div class="option-card">⬅️ Left</div>
+        </label>
+      </div>
+
+      <!-- Chair Selection -->
+      <label class="section-label">Chair</label>
+      <div class="selection-grid grid-chairs">
+        <label>
+          <input type="radio" name="chair" value="001">
+          <div class="option-card">C1</div>
+        </label>
+        <label>
+          <input type="radio" name="chair" value="010">
+          <div class="option-card">C2</div>
+        </label>
+        <label>
+          <input type="radio" name="chair" value="011">
+          <div class="option-card">C3</div>
+        </label>
+        <label>
+          <input type="radio" name="chair" value="100">
+          <div class="option-card">C4</div>
+        </label>
+        <label>
+          <input type="radio" name="chair" value="101">
+          <div class="option-card">C5</div>
+        </label>
+        <label>
+          <input type="radio" name="chair" value="110">
+          <div class="option-card">C6</div>
+        </label>
+      </div>
+
+      <!-- Waste Type Selection -->
+      <label class="section-label">Waste Type</label>
+      <div class="selection-grid grid-3">
+        <label>
+          <input type="radio" name="waste" value="01">
+          <div class="option-card">
+            <span class="icon">🥤</span>
+            Plastic
+          </div>
+        </label>
+        <label>
+          <input type="radio" name="waste" value="10">
+          <div class="option-card">
+            <span class="icon">🫙</span>
+            Glass
+          </div>
+        </label>
+        <label>
+          <input type="radio" name="waste" value="11">
+          <div class="option-card">
+            <span class="icon">📄</span>
+            Paper
+          </div>
+        </label>
+      </div>
+
+      <button type="button" id="submitBtn" class="submit-btn">Send Request</button>
+      <div id="notification"></div>
+    </form>
+  </div>
+
+  <!-- Firebase Logic -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyB5TGLVWNurkFwYXhFZ-G5BbSqK8JPjz9g",
+      authDomain: "trash-collecting-binbot.firebaseapp.com",
+      databaseURL: "https://trash-collecting-binbot-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "trash-collecting-binbot",
+      storageBucket: "trash-collecting-binbot.firebasestorage.app",
+      messagingSenderId: "755481151290",
+      appId: "1:755481151290:web:63bb67ffab399dacb57203",
+      measurementId: "G-JFL253R7D3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const btn = document.getElementById("submitBtn");
+    const notification = document.getElementById("notification");
+
+    btn.addEventListener("click", () => {
+      // Get values
+      const tableElement = document.querySelector('input[name="table"]:checked');
+      const directionElement = document.querySelector('input[name="direction"]:checked');
+      const chairElement = document.querySelector('input[name="chair"]:checked');
+      const wasteElement = document.querySelector('input[name="waste"]:checked');
+
+      if (!tableElement || !directionElement || !chairElement || !wasteElement) {
+        showNotification("Please select all options!", "error");
+        return;
+      }
+
+      const tableVal = tableElement.value;
+      const directionVal = directionElement.value;
+      const chairVal = chairElement.value;
+      const wasteVal = wasteElement.value;
+
+      // Construct Binary String
+      // Format: Table(2) + Direction(1) + Chair(3) + Waste(2)
+      const binaryString = tableVal + directionVal + chairVal + wasteVal;
+
+      console.log("Generated Binary:", binaryString);
+
+      // Human readable for debug in DB
+      const readableData = {
+        table: tableElement.nextElementSibling.innerText,
+        direction: directionElement.nextElementSibling.innerText,
+        chair: chairElement.nextElementSibling.innerText,
+        waste: wasteElement.nextElementSibling.innerText
+      };
+
+      // Store in DB
+      push(ref(db, "wasteRequests"), {
+        binaryRequest: binaryString,
+        ...readableData,
+        timestamp: Date.now()
+      }).then(() => {
+        showNotification("Request sent successfully! 🚀", "success");
+        resetForm();
+      }).catch((err) => {
+        console.error(err);
+        showNotification("Error sending request.", "error");
+      });
+    });
+
+    function showNotification(msg, type) {
+      notification.textContent = msg;
+      notification.className = type;
+      notification.style.opacity = '1';
+
+      setTimeout(() => {
+        notification.style.opacity = '0';
+      }, 3000);
+    }
+
+    function resetForm() {
+      document.querySelectorAll('input[type="radio"]').forEach(el => el.checked = false);
+    }
+  </script>
+
+</body>
+
+</html>
